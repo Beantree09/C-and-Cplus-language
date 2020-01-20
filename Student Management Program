@@ -1,0 +1,191 @@
+#pragma warning(disable: 4996)
+
+#include<stdio.h>
+#include<malloc.h>
+#include<windows.h>
+#include<stdlib.h>
+#include<string.h>
+
+int stu_num = 1;
+
+typedef struct node {
+	char name[20];
+	int stu_num;
+	int num;
+	int major;
+	int age;
+	struct node * link;
+}DATA;
+
+DATA * get_node() {
+	DATA * tmp = (DATA *)malloc(sizeof(DATA));
+	tmp->link = NULL;
+	return tmp;
+}
+void Input_data(DATA ** top);
+int Del_data(DATA ** top, char tmp_name[20]);
+void show_data_all(DATA ** top);
+void show_data(DATA ** top, char tmp_name[20]);
+void Del_data_all(DATA ** top);
+
+int main() {
+	int menu;
+	DATA * top = NULL;
+	char tmp_name[20];
+	while (1) {
+		system("cls");
+		printf("\n======= 학생 관리 프로그램 ======\n\n");
+		printf("\t1.새로운 학생정보 추가\n\t2.학생 정보 삭제\n\t3.학생 정보 검색\n\t4.학생 목록 출력\n\t5.초기화\n\t6.종료\n");
+		printf("===================================\n\n >> ");
+		scanf("%d", &menu);
+		switch (menu) {
+		case 1:
+			system("cls");
+			printf("과제 너무 힘들다!!!!\n\n\n학생 정보 입력\n\n");
+			Input_data(&top);
+			getchar();
+			break;
+
+		case 2:
+			system("cls");
+			printf("4.학생 정보 삭제\n\n");
+			memset(tmp_name, 0, sizeof(tmp_name));
+			printf("'누구'를 지울까요...? : "); scanf("%s", tmp_name);
+			Del_data(&top, tmp_name);
+			getchar();
+			break;
+
+		case 3:
+			system("cls");
+			printf("6.학생 정보 검색\n\n");
+			memset(tmp_name, 0, sizeof(tmp_name));
+			printf("누구를 확인 하시겠습니까? : "); scanf("%s", tmp_name);
+			show_data(&top, tmp_name);
+			getchar();
+			break;
+
+		case 4:
+			system("cls");
+			printf("1.학생 정보 출력\n\n");
+			show_data_all(&top);
+			getchar();
+			break;
+
+
+		case 5:
+			system("cls");
+			Del_data_all(&top);
+			getchar();
+			break;
+		
+
+		case 6:
+			return 0;
+			//이 방법을 몰라서 1시간이나 생각했다는;;;;; 여기서 현타씨게 왔다는건 안비밀...
+
+		default:
+			printf("잘못 된 입력입니다.\n\n\n");
+			getchar();
+			system("pause");
+		}
+	}
+	return 0;
+}
+
+void Input_data(DATA ** top) {
+	if (*top == NULL) {
+		*top = get_node();
+		printf("이름 : "); scanf("%s", (*top)->name);
+		(*top)->stu_num = stu_num;
+		stu_num++;
+		while (1) {
+			printf("학번 : "); scanf("%d", &(*top)->num);
+			if ((*top)->num > 0 && (*top)->num < 30000000) {
+				break;
+			}
+		}
+		while (1) {
+			printf("나이 : "); scanf("%d", &(*top)->major);
+			if ((*top)->major > 0 && (*top)->major < 100) {
+				break;
+			}
+		}
+		while (1) {
+			printf("키 : "); scanf("%d", &(*top)->age);
+			if ((*top)->age > 0 && (*top)->age < 300) {
+				break;
+			}
+		}
+		return;
+	}
+	Input_data(&(*top)->link);
+}
+
+
+int Del_data(DATA ** top, char tmp_name[20]) {
+	DATA * tmp = *top;
+	if (tmp == NULL) {
+		printf("찾는 이름이 없습니다.\n");
+		system("pause");
+		return -1;
+	}
+	if (strcmp(tmp->name, tmp_name) == 0) {
+		DATA * tmp2 = tmp->link;
+	    printf("%s 학생의 '인생'이 삭제됩니다(앗...).", tmp->name);
+		free(tmp);
+		*top = tmp2;
+		return 0;
+	}
+	Del_data(&tmp->link, tmp_name);
+	return 0;
+}
+
+void show_data_all(DATA ** top) {
+	DATA * tmp = *top;
+	system("cls");
+	printf("=============================================\n");
+	printf("%28s\n", "입력된 '흑우'들");
+	printf("=============================================\n");
+	printf("%8s%8s%8s%12s%8s\n", "번호", "이름", "학번", "나이", "키");
+	printf("---------------------------------------------\n");
+	if (tmp == NULL) {
+		printf("아무도 없쥬?????.\n");
+		system("pause");
+		return;
+	}
+	while (tmp) {
+		printf("%8d%8s%12d%8d%8d\n", tmp->stu_num, tmp->name, tmp->num, tmp->major, tmp->age);
+		tmp = tmp->link;
+	}
+	printf("\n\n\n\n");
+	system("pause");
+}
+
+void Del_data_all(DATA ** top) {
+	DATA * tmp = *top;
+	if (tmp == NULL)
+		printf("제거할 이름이 없습니다.");
+
+	else 
+		DATA * tmp2 = tmp->link;
+	    free(tmp);
+		return;
+		
+
+
+}
+
+void show_data(DATA ** top, char tmp_name[20]) {
+	DATA * tmp = *top;
+	if (tmp == NULL) {
+		printf("찾는 이름이 없습니다.\n");
+		system("pause");
+		return;
+	}
+	if (strcmp(tmp->name, tmp_name) == 0) {
+		printf("이름 : %s\n학번 : %d\n나이 : %d\n키: %d\n", tmp->name, tmp->num, tmp->major, tmp->age);
+		system("pause");
+		return;
+	}
+	show_data(&(*top)->link, tmp_name);
+}
