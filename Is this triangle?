@@ -1,0 +1,45 @@
+#pragma warning(disable: 4996)
+
+#include<stdio.h>
+
+char arr[3072][6144]; //2차원 좌표계 생성
+
+void star(int, int, int);
+int main() {
+	int N = 3, tmp;
+	scanf("%d", &tmp);
+	while (tmp--) N *= 2; 
+	//N^tmp 계산 (규칙을 보면, 출력되는 줄 수는 3*2^k 를 따른다
+
+	star(N, 0, N - 1); //좌표를 찍는 함수 호출 (시작 좌표는 0행 N-1열로 (0, N-1))
+
+	//이건 그냥 출력문 볼거없음
+	for (int i = 0; i < N;i++) {
+		for (int j = 0; j < 2 * N; j++)	printf("%c", arr[i][j] ? '*' : ' '); // A? f1: f2; 이거 수업시간에 삼항연산자 안배운 사람도 있겠지만 그냥 if문 축약 시킨거
+		printf("\n");
+	}
+
+	return 0;
+}
+
+
+
+void star(int N, int i, int j) {
+	//N == 3일 때 브레이크포인트 (모양대로 별을 찍고 종료)
+	if (N == 3) {
+		arr[i][j] = '*';
+		arr[i + 1][j - 1] = '*';
+		arr[i + 1][j + 1] = '*';
+		arr[i + 2][j - 2] = '*';
+		arr[i + 2][j - 1] = '*';
+		arr[i + 2][j] = '*';
+		arr[i + 2][j + 1] = '*';
+		arr[i + 2][j + 2] = '*';
+		return;
+	}
+
+	//자기 자신에게 좌표 전달 후 호출
+	star(N / 2, i, j);						// 현재 위치의 좌표
+	star(N / 2, i + (N / 2), j - (N / 2)); //현재 위치의 왼쪽 밑 좌표
+	star(N / 2, i + (N / 2), j + (N / 2)); // " 오른쪽 밑 "ㅐ
+}//Holy F*** Star ^^
